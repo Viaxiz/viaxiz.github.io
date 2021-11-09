@@ -16,23 +16,5 @@
       <description></description>
     </item>
     
-    <item>
-      <title>bar</title>
-      <link>http://example.org/tags/bar/</link>
-      <pubDate>Sun, 07 Nov 2021 17:43:58 +0800</pubDate>
-      
-      <guid>http://example.org/tags/bar/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>foo</title>
-      <link>http://example.org/tags/foo/</link>
-      <pubDate>Sun, 07 Nov 2021 17:43:58 +0800</pubDate>
-      
-      <guid>http://example.org/tags/foo/</guid>
-      <description></description>
-    </item>
-    
   </channel>
 </rss>

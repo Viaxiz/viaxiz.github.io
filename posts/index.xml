@@ -16,39 +16,5 @@
       <description>今天冬至，记得吃点好吃的。</description>
     </item>
     
-    <item>
-      <title>TestChinese</title>
-      <link>http://example.org/posts/testchinese/</link>
-      <pubDate>Sun, 07 Nov 2021 18:17:07 +0800</pubDate>
-      
-      <guid>http://example.org/posts/testchinese/</guid>
-      <description>这是用来测试中文的一篇博客&amp;hellip;</description>
-    </item>
-    
-    <item>
-      <title>My Second Post</title>
-      <link>http://example.org/posts/my-second-post/</link>
-      <pubDate>Sun, 07 Nov 2021 17:43:58 +0800</pubDate>
-      
-      <guid>http://example.org/posts/my-second-post/</guid>
-      <description>Actually , this is a test for another summary show&amp;hellip;</description>
-    </item>
-    
-    <item>
-      <title>My First Post</title>
-      <link>http://example.org/posts/my-first-post/</link>
-      <pubDate>Sun, 07 Nov 2021 17:33:25 +0800</pubDate>
-      
-      <guid>http://example.org/posts/my-first-post/</guid>
-      <description>&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Pellentesque eu tincidunt tortor
-aliquam nulla facilisi cras fermentum odio. A erat nam at lectus urna duis.
-Sed velit dignissim sodales ut eu sem. Lectus urna duis convallis convallis
-tellus. Diam sit amet nisl suscipit adipiscing bibendum est. Sed felis eget
-velit aliquet sagittis id consectetur. Vulputate dignissim suspendisse in est
-ante in nibh mauris cursus. Morbi quis commodo odio aenean. Mollis nunc sed id
-semper risus in hendrerit gravida rutrum.&lt;/p&gt;</description>
-    </item>
-    
   </channel>
 </rss>
