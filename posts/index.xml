@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on 小习小习好好学习</title>
-    <link>http://example.org/posts/</link>
+    <link>https://viaxiz.github.io/posts/</link>
     <description>Recent content in Posts on 小习小习好好学习</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 07 Nov 2021 18:50:34 +0800</lastBuildDate><atom:link href="http://example.org/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 07 Nov 2021 18:50:34 +0800</lastBuildDate><atom:link href="https://viaxiz.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Winter</title>
-      <link>http://example.org/posts/winter/</link>
+      <link>https://viaxiz.github.io/posts/winter/</link>
       <pubDate>Sun, 07 Nov 2021 18:50:34 +0800</pubDate>
       
-      <guid>http://example.org/posts/winter/</guid>
+      <guid>https://viaxiz.github.io/posts/winter/</guid>
       <description>冬天来啦！</description>
     </item>
     
