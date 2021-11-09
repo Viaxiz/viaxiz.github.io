@@ -1,0 +1,15 @@
+
+ /* by xz */
+
+.hr-edge-weak {
+    border: 0;
+    padding-top: 1px;
+    background: linear-gradient(to right, transparent, #030303, transparent);
+}
+
+.main-view{
+    text-align: left;
+    position: relative;
+}
+
+
