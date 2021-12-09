@@ -1,12 +1,31 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>小习小习好好学习</title>
+    <title>viaxizhong</title>
     <link>https://viaxiz.github.io/</link>
-    <description>Recent content on 小习小习好好学习</description>
+    <description>Recent content on viaxizhong</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Thu, 25 Nov 2021 16:09:59 +0800</lastBuildDate><atom:link href="https://viaxiz.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language>
+    <lastBuildDate>Thu, 09 Dec 2021 14:17:01 +0800</lastBuildDate><atom:link href="https://viaxiz.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Test</title>
+      <link>https://viaxiz.github.io/posts/test/</link>
+      <pubDate>Thu, 09 Dec 2021 14:17:01 +0800</pubDate>
+      
+      <guid>https://viaxiz.github.io/posts/test/</guid>
+      <description>这是一个test，关于是否能有标签的测试。</description>
+    </item>
+    
+    <item>
+      <title>About me</title>
+      <link>https://viaxiz.github.io/about/</link>
+      <pubDate>Wed, 08 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://viaxiz.github.io/about/</guid>
+      <description>您好，我是习钟！
+My GitHub.</description>
+    </item>
+    
     <item>
       <title>Raft Presentation</title>
       <link>https://viaxiz.github.io/posts/raft-presentation/</link>
