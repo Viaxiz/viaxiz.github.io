@@ -6,16 +6,7 @@
     <description>Recent content in Posts on viaxizhong</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 09 Dec 2021 14:17:01 +0800</lastBuildDate><atom:link href="https://viaxiz.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Test</title>
-      <link>https://viaxiz.github.io/posts/test/</link>
-      <pubDate>Thu, 09 Dec 2021 14:17:01 +0800</pubDate>
-      
-      <guid>https://viaxiz.github.io/posts/test/</guid>
-      <description>这是一个test，关于是否能有标签的测试。</description>
-    </item>
-    
+    <lastBuildDate>Thu, 25 Nov 2021 16:09:59 +0800</lastBuildDate><atom:link href="https://viaxiz.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Raft Presentation</title>
       <link>https://viaxiz.github.io/posts/raft-presentation/</link>
