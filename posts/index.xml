@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on viaxizhong</title>
+    <link>https://viaxiz.github.io/posts/</link>
+    <description>Recent content in Posts on viaxizhong</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 31 Mar 2023 19:56:39 +0800</lastBuildDate><atom:link href="https://viaxiz.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>My Database: 写一个自己的数据库</title>
+      <link>https://viaxiz.github.io/posts/my-database/</link>
+      <pubDate>Fri, 31 Mar 2023 19:56:39 +0800</pubDate>
+      
+      <guid>https://viaxiz.github.io/posts/my-database/</guid>
+      <description>（一）事务</description>
+    </item>
+    
+    <item>
+      <title>Scenery Part</title>
+      <link>https://viaxiz.github.io/posts/scenery-part/</link>
+      <pubDate>Wed, 15 Feb 2023 12:44:29 +0800</pubDate>
+      
+      <guid>https://viaxiz.github.io/posts/scenery-part/</guid>
+      <description>多出去走走。</description>
+    </item>
+    
+    <item>
+      <title>&lt;转载&gt;写在20年初的校招面试心得与自学CS经验及找工作分享</title>
+      <link>https://viaxiz.github.io/posts/guidance/</link>
+      <pubDate>Fri, 15 Apr 2022 01:19:48 +0800</pubDate>
+      
+      <guid>https://viaxiz.github.io/posts/guidance/</guid>
+      <description>理想主义者的落实</description>
+    </item>
+    
+    <item>
+      <title>Procrastination</title>
+      <link>https://viaxiz.github.io/posts/procrastination/</link>
+      <pubDate>Fri, 01 Apr 2022 01:21:58 +0800</pubDate>
+      
+      <guid>https://viaxiz.github.io/posts/procrastination/</guid>
+      <description>拖延证和执行力的关系。（水文毋点）</description>
+    </item>
+    
+    <item>
+      <title>First semester reflection</title>
+      <link>https://viaxiz.github.io/posts/first_semester/</link>
+      <pubDate>Wed, 08 Dec 2021 23:51:31 +0800</pubDate>
+      
+      <guid>https://viaxiz.github.io/posts/first_semester/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Raft Presentation</title>
+      <link>https://viaxiz.github.io/posts/raft-presentation/</link>
+      <pubDate>Thu, 25 Nov 2021 16:09:59 +0800</pubDate>
+      
+      <guid>https://viaxiz.github.io/posts/raft-presentation/</guid>
+      <description>关于Raft协议的presentation，汇报时重点放在了分布式系统的介绍和Raft算法设计部分。</description>
+    </item>
+    
+    <item>
+      <title>Agency</title>
+      <link>https://viaxiz.github.io/posts/agency/</link>
+      <pubDate>Thu, 11 Nov 2021 23:07:20 +0800</pubDate>
+      
+      <guid>https://viaxiz.github.io/posts/agency/</guid>
+      <description>a person or thing through which power is exerted or an end is achieved.</description>
+    </item>
+    
+    <item>
+      <title>Winter</title>
+      <link>https://viaxiz.github.io/posts/winter/</link>
+      <pubDate>Sun, 07 Nov 2021 18:50:34 +0800</pubDate>
+      
+      <guid>https://viaxiz.github.io/posts/winter/</guid>
+      <description>冬天来啦！</description>
+    </item>
+    
+  </channel>
+</rss>

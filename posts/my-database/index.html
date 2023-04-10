@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  
+  <title>My Database: 写一个自己的数据库 - viaxizhong</title>
+
+  
+  
+  <meta name="description" content="（一）事务" />
+  <meta name="author" content="" />
+  
+
+  
+  
+  
+  
+  
+  
+  <link rel="preload stylesheet" as="style" href="https://viaxiz.github.io/app.min.css" />
+
+  
+  <link rel="preload stylesheet" as="style" href="https://viaxiz.github.io/an-old-hope.min.css" />
+  <script
+    defer
+    src="https://viaxiz.github.io/highlight.min.js"
+    onload="hljs.initHighlightingOnLoad();"
+  ></script>
+  
+
+  
+  <link rel="preload" as="image" href="https://viaxiz.github.io/theme.png" />
+
+  
+  <link rel="preload" as="image" href="https://viaxiz.github.io/github.svg" />
+  
+
+  
+  <link rel="icon" href="https://viaxiz.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://viaxiz.github.io/apple-touch-icon.png" />
+
+  
+  <meta name="generator" content="Hugo 0.88.1" />
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  <meta property="og:title" content="My Database: 写一个自己的数据库" />
+<meta property="og:description" content="（一）事务" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://viaxiz.github.io/posts/my-database/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-03-31T19:56:39+08:00" />
+<meta property="article:modified_time" content="2023-03-31T19:56:39+08:00" />
+
+
+  
+  <meta itemprop="name" content="My Database: 写一个自己的数据库">
+<meta itemprop="description" content="（一）事务"><meta itemprop="datePublished" content="2023-03-31T19:56:39+08:00" />
+<meta itemprop="dateModified" content="2023-03-31T19:56:39+08:00" />
+<meta itemprop="wordCount" content="406">
+<meta itemprop="keywords" content="学习,数据库," />
+  
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="My Database: 写一个自己的数据库"/>
+<meta name="twitter:description" content="（一）事务"/>
+
+  
+  
+</head>
+
+
+  <body class="not-ready" data-menu="true">
+    <header class="header">
+
+
+  
+  <link rel="stylesheet"
+  href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/vs.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', (event) => {
+    document.querySelectorAll('pre code').forEach((el) => {
+      hljs.highlightElement(el);
+    });
+  });
+  </script>
+  
+
+  
+  <p class="logo">
+    <a class="site-name" href="https://viaxiz.github.io/">viaxizhong</a><a class="btn-dark"></a>
+  </p>
+  
+
+  <script>
+    let bodyClx = document.body.classList;
+    let btnDark = document.querySelector('.btn-dark');
+    let sysDark = window.matchMedia('(prefers-color-scheme: dark)');
+    let darkVal = localStorage.getItem('dark');
+
+    let setDark = (isDark) => {
+      bodyClx[isDark ? 'add' : 'remove']('dark');
+      localStorage.setItem('dark', isDark ? 'yes' : 'no');
+    };
+
+    setDark(darkVal ? darkVal === 'yes' : sysDark.matches);
+    requestAnimationFrame(() => bodyClx.remove('not-ready'));
+
+    btnDark.addEventListener('click', () => setDark(!bodyClx.contains('dark')));
+    sysDark.addEventListener('change', (event) => setDark(event.matches));
+  </script>
+
+  
+  
+  <nav class="menu">
+    
+    <a class="" href="/about/">About</a>
+    
+    <a class="" href="/posts/">Post</a>
+    
+  </nav>
+  
+
+  
+  <nav class="social">
+    
+    <a
+      class="github"
+      style="--url: url(./github.svg)"
+      href="https://github.com/Viaxiz"
+      target="_blank"
+    ></a>
+    
+  </nav>
+  
+</header>
+
+
+    <main class="main">
+
+<article class="post-single">
+  <header class="post-title">
+    <h1>My Database: 写一个自己的数据库</h1>
+    <p>
+      <time>Mar 31, 2023</time>
+      
+    </p>
+  </header>
+  <section class="post-content"><h1 id="一起写一个数据库一">一起写一个数据库(一)</h1>
+<p>项目来源：https://ziyang.moe/article/mydb1.html</p>
+<h2 id="事务的定义及相关操作">事务的定义及相关操作</h2>
+<h3 id="xid的定义">XID的定义</h3>
+<blockquote>
+<p>在MyDB中，每一个事务都有一个XID，这个XID唯一标识了这个事务。</p>
+<ul>
+<li>XID编号从1开始自增，不可重复</li>
+<li>编号0为超级事务（Super Transaction）
+<ul>
+<li>当一些操作想在没有申请事务的情况下进行，那么可以将该事务的XID编号设置为0</li>
+<li>XID为0的事务的状态永远为committed</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><strong>“ TransactionManager通过维护一个XID格式的文件来维护事务的状态并提供接口查询某个事务的状态。”</strong></p>
+<blockquote>
+<ul>
+<li>XID文件的头部保存了一个8字节的数字，记录这个XID文件管理的事务个数</li>
+<li>XID文件给每个事务分配了一个字节的空间用来保存其状态</li>
+<li>XID 编号为0的状态不需要记录</li>
+</ul>
+</blockquote>
+<ul>
+<li>主要属性及全局实例定义：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">	<span style="color:#75715e">//XID文件头长度
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> LEN_XID_HEADER_LENGTH <span style="color:#f92672">=</span> 8<span style="color:#f92672">;</span>
+
+    <span style="color:#75715e">//给每个事务分配一个字节的空间用来存储其状态
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> XID_FIELD_SIZE <span style="color:#f92672">=</span> 1<span style="color:#f92672">;</span>
+
+    <span style="color:#75715e">//事务的三种状态
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">byte</span> FIELD_TRAN_ACTIVE <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">byte</span> FIELD_TRAN_COMMITTED <span style="color:#f92672">=</span> 1<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">byte</span> FIELD_TRAN_ABORTED <span style="color:#f92672">=</span> 2<span style="color:#f92672">;</span>
+
+    <span style="color:#75715e">//超级事务，永远为Committed状态
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">long</span> SUPER_XID <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
+
+    <span style="color:#66d9ef">private</span> RandomAccessFile file<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">private</span> FileChannel fc<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">long</span> xidCounter<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">private</span> Lock counterLock<span style="color:#f92672">;</span>
+</code></pre></div><h3 id="构造方法">构造方法</h3>
+<p>通过属性也能看出，基本上就是通过FileChannel结合RandomAccessFile的方式来实现的</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">TransactionManager</span> <span style="color:#f92672">(</span>RandomAccessFile raf<span style="color:#f92672">,</span>FileChannel fc<span style="color:#f92672">){</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">file</span> <span style="color:#f92672">=</span> raf<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">fc</span> <span style="color:#f92672">=</span> fc<span style="color:#f92672">;</span>
+        counterLock <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ReentrantLock<span style="color:#f92672">();</span>
+        checkXIDCounter<span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span>
+</code></pre></div><p>其中的checkXIDCounter()方法用于检查XID文件是否合乎规定</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#75715e">/*
+</span><span style="color:#75715e">    检查XID文件是否合乎规定
+</span><span style="color:#75715e">    校验：通过文件头的8字节数字反推文件的理论长度，与文件的实际长度做对比
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">checkXIDCounter</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">long</span> fileLen <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+            fileLen <span style="color:#f92672">=</span> file<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">();</span>
+        <span style="color:#f92672">}</span><span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>IOException e<span style="color:#f92672">){</span>
+            Panic<span style="color:#f92672">.</span><span style="color:#a6e22e">panic</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> RuntimeException<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;非法的XID文件！&#34;</span><span style="color:#f92672">));</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>fileLen <span style="color:#f92672">&lt;</span> LEN_XID_HEADER_LENGTH<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            Panic<span style="color:#f92672">.</span><span style="color:#a6e22e">panic</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> RuntimeException<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;非法的XID文件！&#34;</span><span style="color:#f92672">));</span>
+        <span style="color:#f92672">}</span>
+
+        ByteBuffer buf <span style="color:#f92672">=</span>  ByteBuffer<span style="color:#f92672">.</span><span style="color:#a6e22e">allocate</span><span style="color:#f92672">(</span>LEN_XID_HEADER_LENGTH<span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">try</span><span style="color:#f92672">{</span>
+            fc<span style="color:#f92672">.</span><span style="color:#a6e22e">position</span><span style="color:#f92672">(</span>0<span style="color:#f92672">);</span>
+            fc<span style="color:#f92672">.</span><span style="color:#a6e22e">read</span><span style="color:#f92672">(</span>buf<span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>IOException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            Panic<span style="color:#f92672">.</span><span style="color:#a6e22e">panic</span><span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">xidCounter</span> <span style="color:#f92672">=</span> Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">parseLong</span><span style="color:#f92672">(</span>buf<span style="color:#f92672">.</span><span style="color:#a6e22e">array</span><span style="color:#f92672">());</span>
+        <span style="color:#66d9ef">long</span> end <span style="color:#f92672">=</span> getXIDPosition<span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">xidCounter</span> <span style="color:#f92672">+</span> 1<span style="color:#f92672">);</span>
+        <span style="color:#75715e">//读取XID_FILE_HEADER中的xidCounter,根据它计算文件的理论长度，对比实际长度
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span> end <span style="color:#f92672">!=</span> fileLen <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            Panic<span style="color:#f92672">.</span><span style="color:#a6e22e">panic</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> RuntimeException<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;非法的XID文件！&#34;</span><span style="color:#f92672">));</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+</code></pre></div><ul>
+<li>getXIDPosition()方法</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#75715e">//根据事务xid取得其在XID文件中对应的位置
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">long</span> <span style="color:#a6e22e">getXIDPosition</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> xid<span style="color:#f92672">){</span>
+        <span style="color:#66d9ef">return</span> LEN_XID_HEADER_LENGTH <span style="color:#f92672">+</span> <span style="color:#f92672">(</span>xid<span style="color:#f92672">-</span>1<span style="color:#f92672">)*</span>XID_FIELD_SIZE<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+</code></pre></div><h3 id="创建方式">创建方式</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> TransactionManager <span style="color:#a6e22e">create</span><span style="color:#f92672">(</span>String path<span style="color:#f92672">){</span>
+        File f <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span>path<span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>f<span style="color:#f92672">.</span><span style="color:#a6e22e">createNewFile</span><span style="color:#f92672">()){</span>
+                Panic<span style="color:#f92672">.</span><span style="color:#a6e22e">panic</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> RuntimeException<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;File already exists!&#34;</span><span style="color:#f92672">));</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Exception e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            Panic<span style="color:#f92672">.</span><span style="color:#a6e22e">panic</span><span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>f<span style="color:#f92672">.</span><span style="color:#a6e22e">canRead</span><span style="color:#f92672">()</span> <span style="color:#f92672">||</span> <span style="color:#f92672">!</span>f<span style="color:#f92672">.</span><span style="color:#a6e22e">canWrite</span><span style="color:#f92672">()){</span>
+            Panic<span style="color:#f92672">.</span><span style="color:#a6e22e">panic</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> RuntimeException<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;File can not Read or Write!&#34;</span><span style="color:#f92672">));</span>
+        <span style="color:#f92672">}</span>
+
+        FileChannel fc <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+        RandomAccessFile raf <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+            raf <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> RandomAccessFile<span style="color:#f92672">(</span>f<span style="color:#f92672">,</span><span style="color:#e6db74">&#34;rw&#34;</span><span style="color:#f92672">);</span>
+            fc <span style="color:#f92672">=</span> raf<span style="color:#f92672">.</span><span style="color:#a6e22e">getChannel</span><span style="color:#f92672">();</span>		<span style="color:#75715e">//通过RandomAccessFile获取FileChannel的实例
+</span><span style="color:#75715e"></span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>FileNotFoundException e<span style="color:#f92672">){</span>
+            Panic<span style="color:#f92672">.</span><span style="color:#a6e22e">panic</span><span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span>
+
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> TransactionManager<span style="color:#f92672">(</span>raf<span style="color:#f92672">,</span>fc<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<h2 id="filechannelsup11sup">FileChannel<!-- raw HTML omitted --><a href="https://zhuanlan.zhihu.com/p/27650977">1</a><!-- raw HTML omitted --></h2>
+<ul>
+<li>
+<p>FileChannel使用一个InputStream/OutputStream或RandomAccessFile来获取一个FileChannel实例</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">RandomAccessFile raf <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> RandomAccessFile<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;test.txt&#34;</span><span style="color:#f92672">);</span>
+raf<span style="color:#f92672">.</span><span style="color:#a6e22e">getChannel</span><span style="color:#f92672">();</span>
+</code></pre></div></li>
+<li>
+<p>Channel的读写方法</p>
+<p>从文件A中读取内容并写入到文件B：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">ByteBuffer buf <span style="color:#f92672">=</span> ByteBuffer<span style="color:#f92672">.</span><span style="color:#a6e22e">allocate</span><span style="color:#f92672">(</span>1024<span style="color:#f92672">);</span>
+buf<span style="color:#f92672">.</span><span style="color:#a6e22e">clear</span><span style="color:#f92672">();</span>
+
+channelA<span style="color:#f92672">.</span><span style="color:#a6e22e">read</span><span style="color:#f92672">(</span>buf<span style="color:#f92672">);</span>
+
+buf<span style="color:#f92672">.</span><span style="color:#a6e22e">flip</span><span style="color:#f92672">();</span>
+
+<span style="color:#66d9ef">while</span><span style="color:#f92672">(</span>buf<span style="color:#f92672">.</span><span style="color:#a6e22e">hasRemaining</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+  channelB<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span>buf<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div></li>
+<li>
+<p>用完后关闭Channel</p>
+<ul>
+<li>public final void close( )</li>
+</ul>
+</li>
+<li>
+<p>特定位置的读写操作</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">long</span> pos <span style="color:#f92672">=</span> channel<span style="color:#f92672">.</span><span style="color:#a6e22e">position</span><span style="color:#f92672">();</span>
+channel<span style="color:#f92672">.</span><span style="color:#a6e22e">position</span><span style="color:#f92672">(</span>pos <span style="color:#f92672">+</span> 100<span style="color:#f92672">);</span>
+</code></pre></div><p>将位置设在文件符结束之后</p>
+<ul>
+<li>然后试图从文件通道中读取数据，读方法将返回-1（代表文件结束）</li>
+<li>试图向通道中写数据，文件将撑大到当前位置并写入数据，这可能导致“文件空洞”，磁盘上的物理文件中写入的数据间有空隙，撑大的那一部分将以0填充，但却不占用实际的磁盘空间（了解即可，不建议这种操作）</li>
+</ul>
+</li>
+<li>
+<p>返回实例所关联文件的大小</p>
+<ul>
+<li>size( )</li>
+</ul>
+</li>
+<li>
+<p>截取指定长度的文件，指定长度后面的部分将被删除</p>
+<ul>
+<li>truncate( 1024 )  //1024临时示意</li>
+</ul>
+</li>
+<li>
+<p>将通道里尚未写入磁盘的数据强制写到磁盘上</p>
+<p>出于性能方面的考虑，操作系统会将数据缓存到内存中，无法保证写入到Channel里的数据一定会即时写到磁盘上</p>
+<ul>
+<li>force( boolean )</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h3 id="事务操作的相关方法">事务操作的相关方法</h3>
+<ul>
+<li>private void updateXID( long xid,  byte status )
+<ul>
+<li>更新事务的状态为status</li>
+</ul>
+</li>
+<li>private void incrXIDCounter( )
+<ul>
+<li>将XID+1，并更新XIDHeader</li>
+</ul>
+</li>
+<li>public long begin( )
+<ul>
+<li>开始一个事务并返回XID</li>
+</ul>
+</li>
+<li>public void commit(long xid)
+<ul>
+<li>提交XID事务</li>
+</ul>
+</li>
+<li>public void abort(long xid)
+<ul>
+<li>回滚XID事务</li>
+</ul>
+</li>
+<li>private boolean checkXID(long xid, byte status)
+<ul>
+<li>检查XID事务是否处于status状态</li>
+</ul>
+</li>
+<li>public boolean isActive( long xid )
+<ul>
+<li>事务的状态是否正在进行</li>
+</ul>
+</li>
+<li>public boolean isCommitted( long xid )
+<ul>
+<li>事务的状态是否已经提交</li>
+</ul>
+</li>
+<li>public boolean isAborted( long xid )
+<ul>
+<li>事务的状态是否已经取消</li>
+</ul>
+</li>
+</ul>
+<h3 id="关闭流">关闭流</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">close</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+            fc<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+            file<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>IOException e<span style="color:#f92672">){</span>
+            Panic<span style="color:#f92672">.</span><span style="color:#a6e22e">panic</span><span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+</code></pre></div><h2 id="公共类">公共类</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Parser</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">long</span> <span style="color:#a6e22e">parseLong</span><span style="color:#f92672">(</span><span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> buf<span style="color:#f92672">){</span>
+        ByteBuffer buffer <span style="color:#f92672">=</span> ByteBuffer<span style="color:#f92672">.</span><span style="color:#a6e22e">wrap</span><span style="color:#f92672">(</span>buf<span style="color:#f92672">,</span>0<span style="color:#f92672">,</span>8<span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">return</span> buffer<span style="color:#f92672">.</span><span style="color:#a6e22e">getLong</span><span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">long2Byte</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> value<span style="color:#f92672">){</span>
+        <span style="color:#66d9ef">return</span> ByteBuffer<span style="color:#f92672">.</span><span style="color:#a6e22e">allocate</span><span style="color:#f92672">(</span>Long<span style="color:#f92672">.</span><span style="color:#a6e22e">SIZE</span> <span style="color:#f92672">/</span> Byte<span style="color:#f92672">.</span><span style="color:#a6e22e">SIZE</span><span style="color:#f92672">).</span><span style="color:#a6e22e">putLong</span><span style="color:#f92672">(</span>value<span style="color:#f92672">).</span><span style="color:#a6e22e">array</span><span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h2 id="工具类">工具类</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Panic</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">panic</span><span style="color:#f92672">(</span>Exception err<span style="color:#f92672">){</span>
+        err<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">exit</span><span style="color:#f92672">(</span>1<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div></section>
+
+  
+  
+  <footer class="post-tags">
+     
+    <a href="https://viaxiz.github.io/tags/%E5%AD%A6%E4%B9%A0">学习</a>
+     
+    <a href="https://viaxiz.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93">数据库</a>
+    
+  </footer>
+  
+
+  
+  
+  
+  <nav class="post-nav">
+     
+    <a class="next" href="https://viaxiz.github.io/posts/scenery-part/"><span>Scenery Part</span><span>→</span></a>
+    
+  </nav>
+  
+
+  
+  
+</article>
+
+</main>
+
+    <footer class="footer">
+  <p>&copy; 2023 <a href="https://viaxiz.github.io/">viaxizhong</a></p>
+  <p>Powered by <a href="https://gohugo.io/" rel="noopener" target="_blank">Hugo️️</a>️</p>
+  <p>
+    <a href="https://github.com/nanxiaobei/hugo-paper" rel="noopener" target="_blank">Paper 5.1</a>
+  </p>
+</footer>
+
+  </body>
+</html>
