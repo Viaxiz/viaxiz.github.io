@@ -72,10 +72,10 @@
     
     <item>
       <title>Raft Presentation</title>
-      <link>https://viaxiz.github.io/posts/raft-presentation/</link>
+      <link>https://viaxiz.github.io/posts/raft/</link>
       <pubDate>Thu, 25 Nov 2021 16:09:59 +0800</pubDate>
       
-      <guid>https://viaxiz.github.io/posts/raft-presentation/</guid>
+      <guid>https://viaxiz.github.io/posts/raft/</guid>
       <description>关于Raft协议的presentation，汇报时重点放在了分布式系统的介绍和Raft算法设计部分。</description>
     </item>
     
